@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+var https = require('https');
+var argv = require('minimist')(process.argv.slice(2));
+var exec = require('child_process').execSync;
+
+var matches = {
+  nodeVersion: /Version ([0-9.]+) \([a-zA-Z]+\)/,
+  v8up: / (?:v?V?8:?)? (u?U?p(?:date|grade)(?: v?V?8)? to [0-9.]+)/,
+  v8down: / v?V?8:? ((?:back|downgrade) to [0-9.]+)/
+};
+
+if (!argv.version) {
+  // get version from node -v
+  argv.version = exec('node --version').toString().trim().replace('v', '');
+}
+
+https.get({
+  hostname: 'raw.githubusercontent.com',
+  path: '/joyent/node/master/ChangeLog'
+}, function (res) {
+
+  var body = '';
+
+  res.on('data', function (chunk) {
+    body += chunk;
+  });
+
+  res.on('end', function () {
+    processLines(body.split("\n"));
+  });
+
+});
+
+function processLines(lines) {
+  var found = findNodeVersion(argv.version, lines);
+
+  if (found.length === 0) {
+    console.log("%s doesn't appear to be a valid node version", argv.version);
+    return;
+  }
+
+  var v8 = findNextV8Change(found);
+
+  if (!v8) {
+    console.log("Sorry, no V8 information can be found for node v%s", argv.version);
+    return;
+  }
+
+  console.log('Latest V8 change for node v%s was: %s', argv.version, v8);
+}
+
+function findNodeVersion(version, lines) {
+  var accept = false;
+  var m;
+  return lines.filter(function (line) {
+    var match = line.match(matches.nodeVersion);
+    if (match && match[1] === version) {
+      accept = true;
+    }
+    return accept;
+  });
+}
+
+function findNextV8Change(lines) {
+  var change = false;
+  lines.forEach(function (line) {
+    if (change) return;
+    change = testV8Line(line);
+  });
+  return change && change.toLowerCase();
+}
+
+function testV8Line(line) {
+  var matchUp = line.match(matches.v8up);
+  if (matchUp) {
+    return matchUp[1];
+  }
+  var matchDown = line.match(matches.v8down);
+  if (matchDown) {
+    return matchDown[1];
+  }
+  return false;
+}

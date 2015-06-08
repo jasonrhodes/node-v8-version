@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "What version of v8 is included in my node.js?",
   "main": "v8v",
+  "bin": {
+    "v8v": "./v8v"
+  },
   "dependencies": {
     "minimist": "^1.1.1"
   },

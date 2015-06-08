@@ -2,7 +2,7 @@
 
 var https = require('https');
 var argv = require('minimist')(process.argv.slice(2));
-var exec = require('child_process').execSync;
+var exec = require('sync-exec');
 
 var matches = {
   nodeVersion: /Version ([0-9.]+) \([a-zA-Z]+\)/,
@@ -16,7 +16,7 @@ if (argv.v) {
 
 if (!argv.version) {
   // get version from node -v
-  argv.version = exec('node --version').toString().trim().replace('v', '');
+  argv.version = exec('node --version').stdout.trim().replace('v', '');
 }
 
 https.get({

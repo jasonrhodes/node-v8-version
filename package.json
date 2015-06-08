@@ -1,7 +1,33 @@
 {
   "name": "node-v8-version",
-  "bin": "./v8v",
+  "version": "1.0.0",
+  "description": "What version of v8 is included in my node.js?",
+  "main": "v8v",
   "dependencies": {
     "minimist": "^1.1.1"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonrhodes/node-v8-version.git"
+  },
+  "keywords": [
+    "node.js",
+    "v8",
+    "version",
+    "cli"
+  ],
+  "author": {
+    "name": "Jason Rhodes",
+    "email": "jason.matthew.rhodes@gmail.com",
+    "url": "http://rhodesjason.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasonrhodes/node-v8-version/issues"
+  },
+  "homepage": "https://github.com/jasonrhodes/node-v8-version#readme"
 }

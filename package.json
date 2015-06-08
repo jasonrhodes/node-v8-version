@@ -2,7 +2,6 @@
   "name": "node-v8-version",
   "bin": "./v8v",
   "dependencies": {
-    "request": "^2.55.0",
     "minimist": "^1.1.1"
   }
 }
